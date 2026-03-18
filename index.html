@@ -801,7 +801,7 @@ window.addEventListener('load', async () => {
 
   initSupabase(url, key);
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     currentUser = session.user;
     await loadProgress();
@@ -812,7 +812,7 @@ window.addEventListener('load', async () => {
 });
 
 function initSupabase(url, key) {
-  supabase = window.supabase.createClient(url, key);
+  supabaseClient = window.supabase.createClient(url, key);
 }
 
 // ── CONFIG ──
@@ -849,9 +849,9 @@ async function handleAuth() {
 
   let result;
   if (authMode === 'login') {
-    result = await supabase.auth.signInWithPassword({ email, password });
+    result = await supabaseClient.auth.signInWithPassword({ email, password });
   } else {
-    result = await supabase.auth.signUp({ email, password });
+    result = await supabaseClient.auth.signUp({ email, password });
   }
 
   btn.disabled = false;
@@ -879,7 +879,7 @@ function showMsg(text, type) {
 }
 
 async function signOut() {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   currentUser = null;
   progress = {};
   show('auth-screen');
@@ -923,7 +923,7 @@ async function saveField(weekendId, field, value) {
     updated_at: new Date().toISOString(),
   };
 
-  const { error } = await supabase.from('weekend_progress').upsert(row, { onConflict: 'user_id,weekend_id' });
+  const { error } = await supabaseClient.from('weekend_progress').upsert(row, { onConflict: 'user_id,weekend_id' });
 
   if (error) { showSaveIndicator('error'); console.error(error); }
   else { showSaveIndicator('saved'); updateStats(); }
