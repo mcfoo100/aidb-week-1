@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Resolution 2026</title>
+  <link rel="manifest" href="#" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #0a0b0f;
+      --surface: #111318;
+      --surface2: #181c24;
+      --border: #1e2330;
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --accent3: #f59e0b;
+      --text: #e8eaf0;
+      --text-muted: #5a6070;
+      --text-dim: #8892a4;
+      --success: #10b981;
+      --danger: #ef4444;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,229,255,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 50%);
+    }
+
+    /* ── AUTH SCREEN ── */
+    #auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 60px rgba(0,229,255,0.05);
+    }
+
+    .auth-logo {
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .auth-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 32px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .auth-message {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Space Mono', monospace;
+      display: none;
+    }
+
+    .auth-message.error { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); display: block; }
+    .auth-message.success { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); display: block; }
+
+    /* ── CONFIG SCREEN ── */
+    #config-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .config-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .config-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .config-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 28px;
+      line-height: 1.6;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .config-steps {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 2;
+    }
+
+    .config-steps a { color: var(--accent); }
+
+    /* ── MAIN APP ── */
+    #app-screen { display: none; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,11,15,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-label {
+      font-size: 9px;
+      font-family: 'Space Mono', monospace;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 800;
+      font-family: 'Space Mono', monospace;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-ghost {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-dim);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-suggest {
+      padding: 8px 16px;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 8px;
+      color: var(--accent);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-suggest:hover { background: rgba(0,229,255,0.15); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 24px 0;
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 10px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    /* ── SUGGEST PANEL ── */
+    #suggest-panel {
+      display: none;
+      max-width: 1100px;
+      margin: 20px auto 0;
+      padding: 0 24px;
+    }
+
+    .suggest-card {
+      background: linear-gradient(135deg, rgba(0,229,255,0.05), rgba(124,58,237,0.05));
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .suggest-badge {
+      background: var(--accent);
+      color: #000;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .suggest-content { flex: 1; }
+    .suggest-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .suggest-tip { font-size: 12px; color: var(--text-dim); font-family: 'Space Mono', monospace; }
+
+    .suggest-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 24px 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── WEEKEND CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--card-accent, transparent);
+      transition: opacity 0.2s;
+    }
+
+    .card:hover { border-color: #2a2f40; transform: translateY(-2px); }
+    .card.done { border-color: rgba(16,185,129,0.25); }
+    .card.done::before { background: var(--success); }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .card-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .card-check:checked {
+      background: var(--success);
+      border-color: var(--success);
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 12 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5L4.5 8.5L11 1' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .card-title-wrap { flex: 1; }
+
+    .card-number {
+      font-size: 9px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .card-deliverable {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      padding: 10px 12px;
+      background: var(--bg);
+      border-radius: 6px;
+      border-left: 2px solid var(--border);
+    }
+
+    /* ── STAR RATING ── */
+    .stars-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .stars-group { flex: 1; }
+
+    .stars-label {
+      font-size: 9px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .stars {
+      display: flex;
+      gap: 3px;
+    }
+
+    .star {
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--border);
+      transition: color 0.15s, transform 0.15s;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .star:hover, .star.active { color: var(--accent3); }
+    .star:hover { transform: scale(1.2); }
+
+    /* ── HOURS ── */
+    .hours-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .hours-label {
+      font-size: 9px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .hours-input {
+      width: 80px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .hours-input:focus { border-color: var(--accent); }
+
+    /* ── NOTES ── */
+    .notes-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      outline: none;
+      resize: vertical;
+      min-height: 64px;
+      transition: border-color 0.2s;
+      line-height: 1.6;
+    }
+
+    .notes-input:focus { border-color: var(--accent); }
+    .notes-input::placeholder { color: var(--text-muted); }
+
+    /* ── SAVING INDICATOR ── */
+    .save-indicator {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .save-indicator.show { opacity: 1; }
+    .save-indicator.saved { color: var(--success); }
+    .save-indicator.error { color: var(--danger); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .header-stats { display: none; }
+      .auth-card, .config-card { padding: 28px 24px; }
+      .grid { grid-template-columns: 1fr; padding: 0 16px 48px; }
+      .progress-wrap { padding: 16px 16px 0; }
+      #suggest-panel { padding: 0 16px; }
+    }
+
+    /* ── LOADING ── */
+    #loading {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+    }
+
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="spinner"></div>
+  INITIALIZING
+</div>
+
+<!-- CONFIG (shown when no Supabase credentials) -->
+<div id="config-screen" style="display:none">
+  <div class="config-card fade-in">
+    <div class="auth-logo">AI Resolution · 2026</div>
+    <div class="config-title">Connect Supabase First</div>
+    <div class="config-desc">This app needs a free Supabase project for cross-device sync and login. Takes 3 minutes.</div>
+    <div class="config-steps">
+      1. Go to <a href="https://supabase.com" target="_blank">supabase.com</a> → New Project<br>
+      2. Settings → API → copy Project URL + anon key<br>
+      3. In Supabase SQL Editor, run:<br><br>
+      <code style="color:var(--accent);font-size:11px">
+      create table weekend_progress (<br>
+      &nbsp;&nbsp;id uuid default gen_random_uuid() primary key,<br>
+      &nbsp;&nbsp;user_id uuid references auth.users not null,<br>
+      &nbsp;&nbsp;weekend_id text not null,<br>
+      &nbsp;&nbsp;done boolean default false,<br>
+      &nbsp;&nbsp;quality int default 0,<br>
+      &nbsp;&nbsp;time_saved int default 0,<br>
+      &nbsp;&nbsp;notes text default '',<br>
+      &nbsp;&nbsp;hours_spent numeric default 0,<br>
+      &nbsp;&nbsp;updated_at timestamp default now(),<br>
+      &nbsp;&nbsp;unique(user_id, weekend_id)<br>
+      );<br><br>
+      alter table weekend_progress enable row level security;<br><br>
+      create policy "Users own their data" on weekend_progress<br>
+      &nbsp;&nbsp;for all using (auth.uid() = user_id);
+      </code><br><br>
+      4. Paste your credentials below and save
+    </div>
+    <div class="form-group">
+      <label class="form-label">Supabase Project URL</label>
+      <input id="cfg-url" class="form-input" placeholder="https://xxxx.supabase.co" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Supabase Anon Key</label>
+      <input id="cfg-key" class="form-input" placeholder="eyJ..." />
+    </div>
+    <button class="btn-primary" onclick="saveConfig()">Save & Continue</button>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="auth-screen" style="display:none">
+  <div class="auth-card fade-in">
+    <div class="auth-logo">AI Resolution · 2026</div>
+    <div class="auth-title">Track Your<br>AI Journey</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('signup')">Create Account</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input id="auth-email" class="form-input" type="email" placeholder="you@example.com" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input id="auth-password" class="form-input" type="password" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter') handleAuth()" />
+    </div>
+    <button class="btn-primary" id="auth-btn" onclick="handleAuth()">Sign In</button>
+    <div id="auth-msg" class="auth-message"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app-screen">
+  <header>
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="brand-label">10-Weekend</span>
+        <span class="brand-name">AI Resolution 2026</span>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="stat-complete">0</div>
+          <div class="stat-label">Complete</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-hours">0</div>
+          <div class="stat-label">Hours</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-pct">0%</div>
+          <div class="stat-label">Progress</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-suggest" onclick="toggleSuggest()">⚡ What's Next?</button>
+        <button class="btn-ghost" onclick="signOut()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-label">
+      <span id="progress-text">0 of 11 complete</span>
+      <span id="progress-pct">0%</span>
+    </div>
+  </div>
+
+  <div id="suggest-panel">
+    <div class="suggest-card">
+      <div class="suggest-badge" id="suggest-badge">W1</div>
+      <div class="suggest-content">
+        <div class="suggest-title" id="suggest-title">—</div>
+        <div class="suggest-tip" id="suggest-tip">—</div>
+      </div>
+      <button class="suggest-close" onclick="closeSuggest()">×</button>
+    </div>
+  </div>
+
+  <div class="grid" id="cards-grid"></div>
+</div>
+
+<div class="save-indicator" id="save-indicator">Saving…</div>
+
+<script>
+// ── WEEKEND DATA ──
+const WEEKENDS = [
+  { id: 'd0',  label: 'Day 0',      title: 'Setup & Infrastructure',      deliverable: 'Folders, accounts, rubric saved' },
+  { id: 'w1',  label: 'Weekend 1',  title: 'Resolution Tracker',          deliverable: 'Built, live, and logged' },
+  { id: 'w2',  label: 'Weekend 2',  title: 'Model Topography',            deliverable: 'Topography Sheet + Rules of Thumb' },
+  { id: 'w3',  label: 'Weekend 3',  title: 'Deep Research Brief',         deliverable: '2 pages, clear recommendation' },
+  { id: 'w4',  label: 'Weekend 4',  title: 'Data Analysis Memo',          deliverable: 'Cleaned data, 3 insights, 3 actions' },
+  { id: 'w5',  label: 'Weekend 5',  title: 'Visual Explainer',            deliverable: 'One infographic you\'d actually use' },
+  { id: 'w6',  label: 'Weekend 6',  title: 'Information Pipeline',        deliverable: 'Summary + FAQ + Deck from source' },
+  { id: 'w7',  label: 'Weekend 7',  title: 'First Automation',            deliverable: 'Content workflow working' },
+  { id: 'w8',  label: 'Weekend 8',  title: 'Second Automation',           deliverable: 'Productivity workflow working' },
+  { id: 'w9',  label: 'Weekend 9',  title: 'Personal Context OS',         deliverable: 'Context Docs + Capture system' },
+  { id: 'w10', label: 'Weekend 10', title: 'AI-Powered Build',            deliverable: 'Chatbot/Agent deployed' },
+];
+
+const TIPS = {
+  d0:  'Create your AI Resolution folder and subfolders before anything else.',
+  w1:  'Build the tracker in Claude first as an artifact, then deploy.',
+  w2:  'Side-by-side comparison of 3+ models on the same prompt works best.',
+  w3:  'Feed NotebookLM your sources first, then draft the brief.',
+  w4:  'Start with a messy CSV — cleaning it teaches you the most.',
+  w5:  'Gamma or Napkin.ai can turn a paragraph into a visual in minutes.',
+  w6:  'Pick one long YouTube video or PDF as your source material.',
+  w7:  'Make.com free tier is enough — start with a 3-step content workflow.',
+  w8:  'Automate the task you hate most. Friction is a signal.',
+  w9:  'Write your Personal AI README first — one page, plain language.',
+  w10: 'Claude API + a simple HTML wrapper is enough to deploy a chatbot.',
+};
+
+// ── STATE ──
+let supabase = null;
+let currentUser = null;
+let progress = {}; // { weekendId: { done, quality, time_saved, notes, hours_spent } }
+let authMode = 'login';
+let saveTimer = null;
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', async () => {
+  const url = localStorage.getItem('sb_url');
+  const key = localStorage.getItem('sb_key');
+
+  if (!url || !key) {
+    show('config-screen');
+    return;
+  }
+
+  initSupabase(url, key);
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadProgress();
+    renderApp();
+  } else {
+    show('auth-screen');
+  }
+});
+
+function initSupabase(url, key) {
+  supabase = window.supabase.createClient(url, key);
+}
+
+// ── CONFIG ──
+function saveConfig() {
+  const url = document.getElementById('cfg-url').value.trim();
+  const key = document.getElementById('cfg-key').value.trim();
+  if (!url || !key) return alert('Please enter both URL and key.');
+  localStorage.setItem('sb_url', url);
+  localStorage.setItem('sb_key', key);
+  initSupabase(url, key);
+  show('auth-screen');
+}
+
+// ── AUTH ──
+function switchTab(mode) {
+  authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && mode === 'login') || (i === 1 && mode === 'signup'));
+  });
+  document.getElementById('auth-btn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+  document.getElementById('auth-msg').className = 'auth-message';
+}
+
+async function handleAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const btn = document.getElementById('auth-btn');
+  const msg = document.getElementById('auth-msg');
+
+  if (!email || !password) return showMsg('Please enter email and password.', 'error');
+
+  btn.disabled = true;
+  btn.textContent = '…';
+
+  let result;
+  if (authMode === 'login') {
+    result = await supabase.auth.signInWithPassword({ email, password });
+  } else {
+    result = await supabase.auth.signUp({ email, password });
+  }
+
+  btn.disabled = false;
+  btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
+
+  if (result.error) {
+    showMsg(result.error.message, 'error');
+    return;
+  }
+
+  if (authMode === 'signup' && !result.data.session) {
+    showMsg('Check your email to confirm your account.', 'success');
+    return;
+  }
+
+  currentUser = result.data.user;
+  await loadProgress();
+  renderApp();
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = text;
+  el.className = 'auth-message ' + type;
+}
+
+async function signOut() {
+  await supabase.auth.signOut();
+  currentUser = null;
+  progress = {};
+  show('auth-screen');
+}
+
+// ── PROGRESS ──
+async function loadProgress() {
+  const { data, error } = await supabase
+    .from('weekend_progress')
+    .select('*')
+    .eq('user_id', currentUser.id);
+
+  if (error) { console.error(error); return; }
+
+  progress = {};
+  (data || []).forEach(row => {
+    progress[row.weekend_id] = {
+      done: row.done,
+      quality: row.quality || 0,
+      time_saved: row.time_saved || 0,
+      notes: row.notes || '',
+      hours_spent: row.hours_spent || 0,
+    };
+  });
+}
+
+async function saveField(weekendId, field, value) {
+  if (!progress[weekendId]) progress[weekendId] = { done: false, quality: 0, time_saved: 0, notes: '', hours_spent: 0 };
+  progress[weekendId][field] = value;
+
+  showSaveIndicator('saving');
+
+  const row = {
+    user_id: currentUser.id,
+    weekend_id: weekendId,
+    done: progress[weekendId].done,
+    quality: progress[weekendId].quality,
+    time_saved: progress[weekendId].time_saved,
+    notes: progress[weekendId].notes,
+    hours_spent: progress[weekendId].hours_spent,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase.from('weekend_progress').upsert(row, { onConflict: 'user_id,weekend_id' });
+
+  if (error) { showSaveIndicator('error'); console.error(error); }
+  else { showSaveIndicator('saved'); updateStats(); }
+}
+
+function debounceSave(weekendId, field, value) {
+  if (!progress[weekendId]) progress[weekendId] = { done: false, quality: 0, time_saved: 0, notes: '', hours_spent: 0 };
+  progress[weekendId][field] = value;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveField(weekendId, field, value), 800);
+}
+
+// ── RENDER ──
+function renderApp() {
+  hide('loading');
+  hide('auth-screen');
+  hide('config-screen');
+  document.getElementById('app-screen').style.display = 'block';
+  document.getElementById('cards-grid').innerHTML = '';
+
+  WEEKENDS.forEach(w => {
+    const p = progress[w.id] || { done: false, quality: 0, time_saved: 0, notes: '', hours_spent: 0 };
+    const card = document.createElement('div');
+    card.className = 'card fade-in' + (p.done ? ' done' : '');
+    card.id = 'card-' + w.id;
+    card.innerHTML = `
+      <div class="card-header">
+        <input type="checkbox" class="card-check" id="chk-${w.id}" ${p.done ? 'checked' : ''}
+          onchange="toggleDone('${w.id}', this.checked)" />
+        <div class="card-title-wrap">
+          <div class="card-number">${w.label}</div>
+          <div class="card-title">${w.title}</div>
+        </div>
+      </div>
+      <div class="card-deliverable">↳ ${w.deliverable}</div>
+      <div class="stars-row">
+        <div class="stars-group">
+          <div class="stars-label">Outcome Quality</div>
+          <div class="stars" id="qual-${w.id}">
+            ${[1,2,3,4,5].map(n => `<span class="star ${p.quality >= n ? 'active' : ''}"
+              onclick="setStar('${w.id}','quality',${n})">★</span>`).join('')}
+          </div>
+        </div>
+        <div class="stars-group">
+          <div class="stars-label">Time Saved</div>
+          <div class="stars" id="ts-${w.id}">
+            ${[1,2,3,4,5].map(n => `<span class="star ${p.time_saved >= n ? 'active' : ''}"
+              onclick="setStar('${w.id}','time_saved',${n})">★</span>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="hours-row">
+        <span class="hours-label">Hours Spent</span>
+        <input type="number" class="hours-input" id="hrs-${w.id}"
+          value="${p.hours_spent || ''}" min="0" max="20" step="0.5" placeholder="0"
+          oninput="debounceSave('${w.id}','hours_spent', parseFloat(this.value)||0)" />
+      </div>
+      <textarea class="notes-input" id="notes-${w.id}" placeholder="Notes, best prompt, what worked…"
+        oninput="debounceSave('${w.id}','notes',this.value)">${p.notes || ''}</textarea>
+    `;
+    document.getElementById('cards-grid').appendChild(card);
+  });
+
+  updateStats();
+}
+
+function toggleDone(weekendId, checked) {
+  const card = document.getElementById('card-' + weekendId);
+  card.classList.toggle('done', checked);
+  saveField(weekendId, 'done', checked);
+}
+
+function setStar(weekendId, field, value) {
+  const prefix = field === 'quality' ? 'qual' : 'ts';
+  document.querySelectorAll(`#${prefix}-${weekendId} .star`).forEach((s, i) => {
+    s.classList.toggle('active', i < value);
+  });
+  saveField(weekendId, field, value);
+}
+
+function updateStats() {
+  const total = WEEKENDS.length;
+  const done = WEEKENDS.filter(w => progress[w.id]?.done).length;
+  const hours = WEEKENDS.reduce((acc, w) => acc + (progress[w.id]?.hours_spent || 0), 0);
+  const pct = Math.round((done / total) * 100);
+
+  document.getElementById('stat-complete').textContent = done;
+  document.getElementById('stat-hours').textContent = hours % 1 === 0 ? hours : hours.toFixed(1);
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${done} of ${total} complete`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// ── SUGGEST ──
+function toggleSuggest() {
+  const panel = document.getElementById('suggest-panel');
+  if (panel.style.display === 'block') { closeSuggest(); return; }
+
+  const next = WEEKENDS.find(w => !progress[w.id]?.done);
+  if (!next) {
+    document.getElementById('suggest-badge').textContent = '🎉';
+    document.getElementById('suggest-title').textContent = 'All weekends complete!';
+    document.getElementById('suggest-tip').textContent = 'Incredible work. You built a full personal AI OS.';
+  } else {
+    document.getElementById('suggest-badge').textContent = next.label.replace('Weekend ', 'W').replace('Day ', 'D');
+    document.getElementById('suggest-title').textContent = next.title;
+    document.getElementById('suggest-tip').textContent = '💡 ' + TIPS[next.id];
+  }
+  panel.style.display = 'block';
+}
+
+function closeSuggest() {
+  document.getElementById('suggest-panel').style.display = 'none';
+}
+
+// ── UI HELPERS ──
+function show(id) {
+  hide('loading'); hide('config-screen'); hide('auth-screen');
+  document.getElementById(id).style.display = 'flex';
+}
+
+function hide(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+function showSaveIndicator(state) {
+  const el = document.getElementById('save-indicator');
+  el.className = 'save-indicator show ' + state;
+  el.textContent = state === 'saving' ? 'Saving…' : state === 'saved' ? '✓ Saved' : '✗ Error';
+  clearTimeout(el._timer);
+  if (state !== 'saving') el._timer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
