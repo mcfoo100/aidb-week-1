@@ -789,12 +789,13 @@ let authMode = 'login';
 let saveTimer = null;
 
 // ── INIT ──
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('load', async () => {
   const url = localStorage.getItem('sb_url');
   const key = localStorage.getItem('sb_key');
 
   if (!url || !key) {
-    show('config-screen');
+    hide('loading');
+    document.getElementById('config-screen').style.display = 'flex';
     return;
   }
 
